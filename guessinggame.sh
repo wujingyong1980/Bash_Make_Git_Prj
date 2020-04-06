@@ -2,7 +2,7 @@
 # File: guessinggame.sh
 
 function getfile_num {
-	echo "$(ls -lR|grep "^-"|wc -l|sed 's/ //g')"
+	echo "$(ls -la|grep "^-"|wc -l|sed 's/ //g')"
 }
 
 file_num=$(getfile_num)
@@ -10,14 +10,21 @@ file_num=$(getfile_num)
 echo -n "Guess how many files do we have in pwd:"
 read response
 
-while [[ $response -ne $file_num ]]
+# when response is not a proper number or not the correct answer, keep doing
+while [[ ! $response =~ ^[1-9][0-9]*$|^0$ ]] || [[ $response -ne $file_num ]]
 do
-	if [[ $response -gt $file_num ]]
+	#check if response is a proper number
+	if [[ $response =~ ^[1-9][0-9]*$|^0$ ]]
 	then
-		echo -n "too large, guess a smaller number:"
+		if [[ $response -gt $file_num ]]
+		then
+			echo -n "too large, guess a smaller number:"
+		else
+			echo -n "too small, guess a larger number:"
+		fi
 	else
-		echo -n "too small, guess a larger number:"
-	fi
+		echo -n "you need enter a proper number:"
+	fi 
 	read response
 done
 
